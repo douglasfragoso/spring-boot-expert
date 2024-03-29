@@ -9,7 +9,7 @@ import spring.boot.expert.curso.model.Client;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer>{
 
-    List<Client> findByNomeLike(String nome);
+    List<Client> findByNameLike(String nome);
 
-    boolean existsByNome(String nome);
+    boolean existsByName(String nome);
 }

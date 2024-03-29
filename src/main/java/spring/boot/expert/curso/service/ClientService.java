@@ -51,12 +51,12 @@ public class ClientService {
         }
 
         @Transactional(readOnly = true)
-        public ClientDTO findByName(String name){
+        public List<ClientDTO> findByName(String name){
             if(!clientRepository.existsByName(name)){
                 return null;
             }
-            Client client = clientRepository.findByNameLike(name).get(0);;
-            return new ClientDTO(client.getId(), client.getName());
+            List<Client> list = clientRepository.findByNameLike("%"+ name + "%");
+            return list.stream().map(x -> new ClientDTO(x.getId(), x.getName())).toList();
         }
         
     }   
