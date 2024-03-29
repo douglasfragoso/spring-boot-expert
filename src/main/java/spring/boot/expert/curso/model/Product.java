@@ -1,21 +1,17 @@
 package spring.boot.expert.curso.model;
 
-
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table( name = "tb_cliente" )
-public class Client implements Serializable {
+@Table( name = "tb_product" )
+public class Product implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -24,18 +20,20 @@ public class Client implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name", length = 100)
-    private String name;
+    @Column(name = "description", length = 300)
+    private String description;
 
-    @OneToMany(mappedBy = "client")
-    private Set<Order> orders = new HashSet<>();
+    @Column(name = "price", length = 30, precision = 2)
+    private Double price;
 
-    public Client() {
+    public Product(Integer id, String description, Double price) {
+        this.id = id;
+        this.description = description;
+        this.price = price;
     }
 
-    public Client(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
 
     public Integer getId() {
@@ -46,21 +44,25 @@ public class Client implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String nome) {
-        this.name = nome;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Set<Order> getOrders() {
-        return orders;
+    public Double getPrice() {
+        return price;
     }
-    
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
-        return "Client [id=" + id + ", nome=" + name + "]";
+        return "Product [id=" + id + "]";
     }
 
     @Override
@@ -79,7 +81,7 @@ public class Client implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Client other = (Client) obj;
+        Product other = (Product) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -87,6 +89,6 @@ public class Client implements Serializable {
             return false;
         return true;
     }
-
-
+    
+    
 }
