@@ -37,7 +37,7 @@ public class ClientService {
         public void delete(Integer id){
             clientRepository.deleteById(id);
         }
-        
+
         @Transactional(readOnly = true)
         public List<ClientDTO> findAll(){
             List<Client> list = clientRepository.findAll();
@@ -50,6 +50,14 @@ public class ClientService {
             return new ClientDTO(client.getId(), client.getName());
         }
 
+        @Transactional(readOnly = true)
+        public ClientDTO findByName(String name){
+            if(!clientRepository.existsByName(name)){
+                return null;
+            }
+            Client client = clientRepository.findByNameLike(name).get(0);;
+            return new ClientDTO(client.getId(), client.getName());
+        }
         
     }   
 
