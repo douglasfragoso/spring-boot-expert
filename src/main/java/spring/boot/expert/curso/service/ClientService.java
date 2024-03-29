@@ -50,14 +50,14 @@ public class ClientService {
             return new ClientDTO(client.getId(), client.getName());
         }
 
-        @Transactional(readOnly = true)
-        public List<ClientDTO> findByName(String name){
-            if(!clientRepository.existsByName(name)){
-                return null;
-            }
-            List<Client> list = clientRepository.findByNameLike("%"+ name + "%");
-            return list.stream().map(x -> new ClientDTO(x.getId(), x.getName())).toList();
-        }
+        // @Transactional(readOnly = true)
+        // public List<ClientDTO> findByName(String name){
+        //     if(!clientRepository.existsByName(name)){
+        //         return null;
+        //     }
+        //     List<Client> list = clientRepository.findByNameLike("%"+ name + "%");
+        //     return list.stream().map(x -> new ClientDTO(x.getId(), x.getName())).toList();
+        // }
         
     }   
 
