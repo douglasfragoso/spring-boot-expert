@@ -4,6 +4,8 @@ package spring.boot.expert.curso.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +41,9 @@ public class ClientService {
         }
 
         @Transactional(readOnly = true)
-        public List<ClientDTO> findAll(){
-            List<Client> list = clientRepository.findAll();
-            return list.stream().map(x -> new ClientDTO(x.getId(), x.getName())).toList(); 
+        public Page<ClientDTO> findAll(Pageable pageable){
+            Page<Client> list = clientRepository.findAll(pageable);
+            return list.map(x -> new ClientDTO(x.getId(), x.getName())); 
         }
 
         @Transactional(readOnly = true)
@@ -50,15 +52,12 @@ public class ClientService {
             return new ClientDTO(client.getId(), client.getName());
         }
 
-        // @Transactional(readOnly = true)
-        // public List<ClientDTO> findByName(String name){
-        //     if(!clientRepository.existsByName(name)){
-        //         return null;
-        //     }
-        //     List<Client> list = clientRepository.findByNameLike("%"+ name + "%");
-        //     return list.stream().map(x -> new ClientDTO(x.getId(), x.getName())).toList();
-        // }
-        
+        @Transactional(readOnly = true)
+        public Page<ClientDTO> findByNameLike(Pageable pageable, String name){
+            Page<Client> list = clientRepository.findByNameLike(pageable, "%" + name + "%");
+            return list.map(x -> new ClientDTO(x.getId(), x.getName())); 
+        }
+      
     }   
 
    

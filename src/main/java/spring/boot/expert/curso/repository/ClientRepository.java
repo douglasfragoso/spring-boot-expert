@@ -1,13 +1,16 @@
 package spring.boot.expert.curso.repository;
 
-// import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import spring.boot.expert.curso.model.Client;
 
 public interface ClientRepository extends JpaRepository<Client, Integer>{
 
-    // List<Client> findByNameLike(String nome);
+    Page<Client> findByNameLike(Pageable pegeable, String name);
 
-    // boolean existsByName(String nome);
+    boolean existsByName(String name);
+    
 }
