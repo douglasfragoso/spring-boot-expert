@@ -32,10 +32,7 @@ public class Product implements Serializable{
         this.price = price;
     }
 
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
+    
     public Integer getId() {
         return id;
     }
