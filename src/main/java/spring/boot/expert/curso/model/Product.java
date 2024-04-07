@@ -1,6 +1,7 @@
 package spring.boot.expert.curso.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,25 +21,35 @@ public class Product implements Serializable{
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "name", length = 100)
+    private String name;
+
     @Column(name = "description", length = 300)
     private String description;
 
-    @Column(name = "price", length = 30, precision = 2)
-    private Double price;
+    @Column(name = "price", precision = 1000, scale = 2)//precision é o tamanho do campo e scale é a quantidade de casas decimais
+    private BigDecimal price;
 
-    public Product(Integer id, String description, Double price) {
+    public Product() {
+    }
+
+    public Product(Integer id, String name, String description, BigDecimal price) {
         this.id = id;
+        this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -49,11 +60,11 @@ public class Product implements Serializable{
         this.description = description;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

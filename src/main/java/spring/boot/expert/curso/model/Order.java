@@ -1,6 +1,7 @@
 package spring.boot.expert.curso.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,8 @@ public class Order implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT") 
     private Instant date;
 
-    @Column(name = "total", length = 30, precision = 2)
-    private Double total;
+    @Column(name = "price", precision = 10000, scale = 2)
+    private BigDecimal total;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
@@ -45,7 +46,7 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public Order(Integer id, Client client, Instant date, Double total) {
+    public Order(Integer id, Client client, Instant date, BigDecimal total) {
         this.id = id;
         this.client = client;
         this.date = date;
@@ -76,11 +77,11 @@ public class Order implements Serializable {
         this.date = date;
     }
 
-    public Double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 
