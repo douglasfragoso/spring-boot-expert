@@ -13,21 +13,24 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderDTO implements Serializable {
+public class OrderInfoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private Integer client;
+    private Integer clientID;
+    private String clientName;
     private Instant date;
     private BigDecimal total;
     private List<OrderItemDTO> items = new ArrayList<>();
 
-    public OrderDTO(Integer id, Integer client, Instant date, BigDecimal total, List<OrderItemDTO> items) {
+    public OrderInfoDTO(Integer id, Integer clientID, String clientName, Instant date, BigDecimal total, List<OrderItemDTO> items) {
         this.id = id;
-        this.client = client;
+        this.clientID = clientID;
+        this.clientName = clientName;
         this.date = date;
         this.total = total.setScale(2, RoundingMode.HALF_UP);
         this.items = items;
     }
+
 }

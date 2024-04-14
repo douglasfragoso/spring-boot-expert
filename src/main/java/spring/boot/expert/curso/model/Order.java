@@ -40,7 +40,7 @@ public class Order implements Serializable {
     private Client client;
 
     @Column(name = "date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT") 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "GMT") 
     private Instant date;
 
     @Column(name = "price", precision = 100, scale = 2)
