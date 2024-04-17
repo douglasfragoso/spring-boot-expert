@@ -37,9 +37,9 @@ public class OrderInfoDTO implements Serializable {
     private String status;
 
     @Getter 
-    private List<OrderItemDTO> items = new ArrayList<>();
+    private List<OrderItemInfoDTO> items = new ArrayList<>();
 
-    public OrderInfoDTO(Integer id, Integer clientID, String clientName, Instant date, BigDecimal total, OrderStatus status, List<OrderItemDTO> items) {
+    public OrderInfoDTO(Integer id, Integer clientID, String clientName, Instant date, BigDecimal total, OrderStatus status, List<OrderItemInfoDTO> items) {
         this.id = id;
         this.clientID = clientID;
         this.clientName = clientName;

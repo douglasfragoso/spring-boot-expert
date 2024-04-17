@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItemDTO  implements Serializable {
+public class OrderItemInfoDTO  implements Serializable {
 
     private static final long serialVersionUID = 1L;
    
     private Integer product;
+    private String productName;
     private Integer quantity;
     
 }

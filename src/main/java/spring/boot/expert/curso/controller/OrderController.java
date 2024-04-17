@@ -22,7 +22,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> insert (@RequestBody OrderDTO dto){
+    public ResponseEntity<OrderInfoDTO> insert (@RequestBody OrderDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.insert(dto));
     }
 

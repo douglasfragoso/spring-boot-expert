@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.boot.expert.curso.dto.OrderDTO;
 import spring.boot.expert.curso.dto.OrderInfoDTO;
 import spring.boot.expert.curso.dto.OrderItemDTO;
+import spring.boot.expert.curso.dto.OrderItemInfoDTO;
 import spring.boot.expert.curso.enums.OrderStatus;
 import spring.boot.expert.curso.model.Client;
 import spring.boot.expert.curso.model.Order;
@@ -37,8 +38,10 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Transactional
-    public OrderDTO insert(OrderDTO orderDTO){
+    public OrderInfoDTO insert(OrderDTO orderDTO){
         Order order = new Order();
+        Client client = clientID(orderDTO);
+        
         order.setTotal(orderDTO.getTotal());
         order.setDate(Instant.now());
         order.setClient(clientID(orderDTO));
@@ -51,16 +54,16 @@ public class OrderService {
 
         order.addItems(items);
        
-        return new OrderDTO(order.getId(), order.getClient().getId(), order.getDate(), order.getTotal(), order.getStatus(), order.getItems().stream().map(x -> new OrderItemDTO(x.getProduct().getId(), x.getQuantity())).collect(Collectors.toList()));
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
 
     @Transactional(readOnly = true)
     public OrderInfoDTO findById(Integer id){
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Order not found"));
-        OrderDTO dto = turnDTO(order); 
-        Client client = clientID(dto);
-        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), order.getItems().stream().map(x -> new OrderItemDTO(x.getProduct().getId(), x.getQuantity())).collect(Collectors.toList()));
+        OrderDTO orderDTO = turnDTO(order); 
+        Client client = clientID(orderDTO);
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
 
     public Client clientID(OrderDTO orderDTO){
@@ -84,6 +87,23 @@ public class OrderService {
             orderItem.setProduct(product);
             orderItem.setQuantity(dto.getQuantity());
             orderItem.setOrder(order);
+            return orderItem;
+        }).collect(Collectors.toList());
+    }
+
+    public List<OrderItemInfoDTO> itemsInfo(Order order, List<OrderItemDTO> items){
+        if(items.isEmpty()){
+            throw new RuntimeException("Order must have at least one item");
+        }
+        return items.stream().map(dto -> {
+            Integer idProduct = dto.getProduct();
+            Product product = productRepository.findById(idProduct)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+            
+            OrderItemInfoDTO orderItem = new OrderItemInfoDTO();
+            orderItem.setProduct(idProduct);
+            orderItem.setProductName(product.getName());
+            orderItem.setQuantity(dto.getQuantity());
             return orderItem;
         }).collect(Collectors.toList());
     }
