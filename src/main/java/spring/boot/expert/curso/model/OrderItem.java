@@ -38,5 +38,5 @@ public class OrderItem implements Serializable {
 
     @Column(name = "quantity")
     private Integer quantity;
-    
+
 }
