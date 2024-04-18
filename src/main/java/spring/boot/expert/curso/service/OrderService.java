@@ -42,7 +42,6 @@ public class OrderService {
         Order order = new Order();
         Client client = clientID(orderDTO);
         
-        order.setTotal(orderDTO.getTotal());
         order.setDate(Instant.now());
         order.setClient(clientID(orderDTO));
         order.setStatus(OrderStatus.WAITING_PAYMENT);
@@ -53,6 +52,8 @@ public class OrderService {
         orderItemRepository.saveAll(items);
 
         order.addItems(items);
+
+        order.setTotal(items);
        
         return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }

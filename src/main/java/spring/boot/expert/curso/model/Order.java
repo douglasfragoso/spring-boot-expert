@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,7 +50,7 @@ public class Order implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "GMT") 
     private Instant date;
 
-    @Getter @Setter
+    @Getter 
     @Column(name = "price", precision = 100, scale = 2)
     private BigDecimal total;
 
@@ -57,7 +58,7 @@ public class Order implements Serializable {
     private Integer status;
 
     @Getter
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
     
     public Order(Integer id, Client client, Instant date, BigDecimal total, OrderStatus status, List<OrderItem> items) {
@@ -72,6 +73,13 @@ public class Order implements Serializable {
     public void addItems(List<OrderItem> newItems) {
         for (OrderItem newItem : newItems) {
             items.add(newItem);
+        }
+    }
+
+    public void setTotal(List<OrderItem> items) {
+        total = BigDecimal.ZERO;
+        for (OrderItem item : items) {
+            total = total.add(item.getSubTotal());
         }
     }
 
