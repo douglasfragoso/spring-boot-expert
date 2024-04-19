@@ -12,6 +12,7 @@ import spring.boot.expert.curso.dto.OrderDTO;
 import spring.boot.expert.curso.dto.OrderInfoDTO;
 import spring.boot.expert.curso.dto.OrderItemDTO;
 import spring.boot.expert.curso.dto.OrderItemInfoDTO;
+import spring.boot.expert.curso.dto.OrderStatusDTO;
 import spring.boot.expert.curso.enums.OrderStatus;
 import spring.boot.expert.curso.model.Client;
 import spring.boot.expert.curso.model.Order;
@@ -24,7 +25,7 @@ import spring.boot.expert.curso.repository.ProductRepository;
 
 @Service
 public class OrderService {
-    
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -38,10 +39,10 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Transactional
-    public OrderInfoDTO insert(OrderDTO orderDTO){
+    public OrderInfoDTO insert(OrderDTO orderDTO) {
         Order order = new Order();
         Client client = clientID(orderDTO);
-        
+
         order.setDate(Instant.now());
         order.setClient(clientID(orderDTO));
         order.setStatus(OrderStatus.WAITING_PAYMENT);
@@ -54,36 +55,55 @@ public class OrderService {
         order.addItems(items);
 
         order.setTotal(items);
-       
-        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
+
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
+                order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        orderRepository.delete(order);
+    }
+
+    @Transactional
+    public OrderInfoDTO update(Integer id, OrderStatusDTO dto){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(OrderStatus.valueOf(dto.getStatus()));
+        order = orderRepository.save(order);
+        OrderDTO orderDTO = turnDTO(order);
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), order.getClient().getName(), order.getDate(),
+                order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
 
     @Transactional(readOnly = true)
-    public OrderInfoDTO findById(Integer id){
+    public OrderInfoDTO findById(Integer id) {
         Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
-        OrderDTO orderDTO = turnDTO(order); 
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        OrderDTO orderDTO = turnDTO(order);
         Client client = clientID(orderDTO);
-        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(), order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
+                order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
 
-    public Client clientID(OrderDTO orderDTO){
+    public Client clientID(OrderDTO orderDTO) {
         Integer idClient = orderDTO.getClient();
         Client client = clientRepository.findById(idClient)
-            .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new RuntimeException("Client not found"));
         return client;
     }
 
-    
-    public List<OrderItem> items(Order order, List<OrderItemDTO> items){
-        if(items.isEmpty()){
+    public List<OrderItem> items(Order order, List<OrderItemDTO> items) {
+        if (items.isEmpty()) {
             throw new RuntimeException("Order must have at least one item");
         }
         return items.stream().map(dto -> {
             Integer idProduct = dto.getProduct();
             Product product = productRepository.findById(idProduct)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-            
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
             orderItem.setQuantity(dto.getQuantity());
@@ -92,15 +112,15 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
-    public List<OrderItemInfoDTO> itemsInfo(Order order, List<OrderItemDTO> items){
-        if(items.isEmpty()){
+    public List<OrderItemInfoDTO> itemsInfo(Order order, List<OrderItemDTO> items) {
+        if (items.isEmpty()) {
             throw new RuntimeException("Order must have at least one item");
         }
         return items.stream().map(dto -> {
             Integer idProduct = dto.getProduct();
             Product product = productRepository.findById(idProduct)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-            
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
             OrderItemInfoDTO orderItem = new OrderItemInfoDTO();
             orderItem.setProduct(idProduct);
             orderItem.setProductName(product.getName());
@@ -109,9 +129,11 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
-    public OrderDTO turnDTO(Order order){
-        return new OrderDTO(order.getId(), order.getClient().getId(), order.getDate(), order.getTotal(), order.getStatus(), order.getItems().stream().map(x -> new OrderItemDTO(x.getProduct().getId(), x.getQuantity())).collect(Collectors.toList()));
+    public OrderDTO turnDTO(Order order) {
+        return new OrderDTO(order.getId(), order.getClient().getId(), order.getDate(), order.getTotal(),
+                order.getStatus(),
+                order.getItems().stream().map(x -> new OrderItemDTO(x.getProduct().getId(), x.getQuantity()))
+                        .collect(Collectors.toList()));
     }
 
 }
-

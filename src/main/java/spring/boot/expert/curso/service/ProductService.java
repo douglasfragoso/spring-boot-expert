@@ -12,12 +12,12 @@ import spring.boot.expert.curso.repository.ProductRepository;
 
 @Service
 public class ProductService {
-    
+
     @Autowired
     private ProductRepository productRepository;
 
     @Transactional
-    public ProductDTO insert (ProductDTO dto){
+    public ProductDTO insert(ProductDTO dto) {
         Product product = new Product();
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO update(Integer id, ProductDTO dto){
+    public ProductDTO update(Integer id, ProductDTO dto) {
         Product product = productRepository.findById(id).get();
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
@@ -37,14 +37,14 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductDTO findById(Integer id){
+    public ProductDTO findById(Integer id) {
         Product product = productRepository.findById(id).get();
-        return new ProductDTO(product.getId(),product.getName(), product.getDescription(), product.getPrice());
+        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice());
     }
-    
+
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(Pageable pageable){
+    public Page<ProductDTO> findAll(Pageable pageable) {
         Page<Product> list = productRepository.findAll(pageable);
-        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice())); 
+        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
     }
 }
