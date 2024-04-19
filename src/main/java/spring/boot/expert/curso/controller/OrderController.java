@@ -1,6 +1,8 @@
 package spring.boot.expert.curso.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,18 +32,23 @@ public class OrderController {
     }
     
     @GetMapping(value = "/id/{id}")
-    public ResponseEntity<OrderInfoDTO> findById(@PathVariable Integer id){
+    public ResponseEntity<OrderInfoDTO> findById(@PathVariable("id") Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(id));
     }
 
+    @GetMapping(value = "/client/{id}")
+    public ResponseEntity<Page<OrderDTO>> findByNameLike(Pageable pageable, @PathVariable("id") Integer client) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.findByClient(pageable, client));
+    }
+
     @PutMapping(value = "/status/id/{id}")
-    public ResponseEntity<OrderInfoDTO> update (@PathVariable Integer id, @RequestBody OrderStatusDTO dto){
+    public ResponseEntity<OrderInfoDTO> update (@PathVariable("id") Integer id, @RequestBody OrderStatusDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.update(id, dto));
     }
 
 
     @DeleteMapping(value = "/id/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id){
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id){
         orderService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Order deleted");
     }

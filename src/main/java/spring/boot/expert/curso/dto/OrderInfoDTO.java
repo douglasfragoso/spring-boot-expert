@@ -22,7 +22,7 @@ public class OrderInfoDTO implements Serializable {
     private Integer id;
 
     @Getter @Setter
-    private Integer clientID;
+    private Integer clientId;
 
     @Getter @Setter
     private String clientName;
@@ -39,9 +39,9 @@ public class OrderInfoDTO implements Serializable {
     @Getter 
     private List<OrderItemInfoDTO> items = new ArrayList<>();
 
-    public OrderInfoDTO(Integer id, Integer clientID, String clientName, Instant date, BigDecimal total, OrderStatus status, List<OrderItemInfoDTO> items) {
+    public OrderInfoDTO(Integer id, Integer clientId, String clientName, Instant date, BigDecimal total, OrderStatus status, List<OrderItemInfoDTO> items) {
         this.id = id;
-        this.clientID = clientID;
+        this.clientId = clientId;
         this.clientName = clientName;
         this.date = date;
         this.total = total.setScale(2, RoundingMode.HALF_UP);

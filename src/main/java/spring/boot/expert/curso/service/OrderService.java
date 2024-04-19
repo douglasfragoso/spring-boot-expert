@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +88,12 @@ public class OrderService {
         Client client = clientID(orderDTO);
         return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
                 order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<OrderDTO> findByClient(Pageable pageable, Integer client) {
+        Page<Order> list = orderRepository.findByClient(pageable, client);
+        return list.map(x -> turnDTO(x));
     }
 
     public Client clientID(OrderDTO orderDTO) {
