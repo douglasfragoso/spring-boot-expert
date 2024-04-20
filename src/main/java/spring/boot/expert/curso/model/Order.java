@@ -51,7 +51,7 @@ public class Order implements Serializable {
     private Instant date;
 
     @Getter 
-    @Column(name = "price", precision = 100, scale = 2)
+    @Column(name = "total", precision = 100, scale = 2)
     private BigDecimal total;
 
     @Column(name = "status")
