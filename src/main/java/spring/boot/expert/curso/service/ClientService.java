@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.boot.expert.curso.dto.ClientDTO;
 import spring.boot.expert.curso.model.Client;
 import spring.boot.expert.curso.repository.ClientRepository;
+import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
 
 @Service
 public class ClientService {
@@ -30,7 +31,7 @@ public class ClientService {
     @Transactional
     public ClientDTO update(Integer id, ClientDTO dto) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
         ;
         client.setName(dto.getName());
         client.setCpf(dto.getCpf());
@@ -43,7 +44,7 @@ public class ClientService {
     @Transactional
     public void delete(Integer id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
         clientRepository.delete(client);
     }
 
@@ -56,7 +57,7 @@ public class ClientService {
     @Transactional(readOnly = true)
     public ClientDTO findById(Integer id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
         return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone());
     }
 

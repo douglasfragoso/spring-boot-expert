@@ -24,6 +24,7 @@ import spring.boot.expert.curso.repository.ClientRepository;
 import spring.boot.expert.curso.repository.OrderItemRepository;
 import spring.boot.expert.curso.repository.OrderRepository;
 import spring.boot.expert.curso.repository.ProductRepository;
+import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
 
 @Service
 public class OrderService {
@@ -65,14 +66,14 @@ public class OrderService {
     @Transactional
     public void delete(Integer id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
         orderRepository.delete(order);
     }
 
     @Transactional
     public OrderInfoDTO update(Integer id, OrderStatusDTO dto){
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
         order.setStatus(OrderStatus.valueOf(dto.getStatus()));
         order = orderRepository.save(order);
         OrderDTO orderDTO = turnDTO(order);
@@ -83,7 +84,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderInfoDTO findById(Integer id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
         OrderDTO orderDTO = turnDTO(order);
         Client client = clientID(orderDTO);
         return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
@@ -99,18 +100,18 @@ public class OrderService {
     public Client clientID(OrderDTO orderDTO) {
         Integer idClient = orderDTO.getClient();
         Client client = clientRepository.findById(idClient)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found"));
         return client;
     }
 
     public List<OrderItem> items(Order order, List<OrderItemDTO> items) {
         if (items.isEmpty()) {
-            throw new RuntimeException("Order must have at least one item");
+            throw new ExceptionBusinessRules("Order must have at least one item");
         }
         return items.stream().map(dto -> {
             Integer idProduct = dto.getProduct();
             Product product = productRepository.findById(idProduct)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new ExceptionBusinessRules("Product not found, id does not exist: " + idProduct));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
@@ -122,12 +123,12 @@ public class OrderService {
 
     public List<OrderItemInfoDTO> itemsInfo(Order order, List<OrderItemDTO> items) {
         if (items.isEmpty()) {
-            throw new RuntimeException("Order must have at least one item");
+            throw new ExceptionBusinessRules("Order must have at least one item");
         }
         return items.stream().map(dto -> {
             Integer idProduct = dto.getProduct();
             Product product = productRepository.findById(idProduct)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new ExceptionBusinessRules("Product not found, id does not exist: " + idProduct));
 
             OrderItemInfoDTO orderItem = new OrderItemInfoDTO();
             orderItem.setProduct(idProduct);
