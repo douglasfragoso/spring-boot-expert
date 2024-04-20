@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.boot.expert.curso.dto.ClientDTO;
 import spring.boot.expert.curso.model.Client;
 import spring.boot.expert.curso.repository.ClientRepository;
+import spring.boot.expert.curso.service.exception.DatabaseException;
 import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
 
 @Service
@@ -45,6 +46,9 @@ public class ClientService {
     public void delete(Integer id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
+        if (client.getOrders().size() > 0){
+            throw new DatabaseException("Client has orders and cannot be deleted");
+        }
         clientRepository.delete(client);
     }
 

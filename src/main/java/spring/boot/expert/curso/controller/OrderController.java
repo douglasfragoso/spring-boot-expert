@@ -46,7 +46,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.update(id, dto));
     }
 
-
     @DeleteMapping(value = "/id/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id){
         orderService.delete(id);

@@ -35,5 +35,6 @@ public class Product implements Serializable{
 
     @Column(name = "price", precision = 1000, scale = 2)//precision é o tamanho do campo e scale é a quantidade de casas decimais
     private BigDecimal price;
+    
 
 }
