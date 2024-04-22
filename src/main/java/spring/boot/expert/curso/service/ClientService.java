@@ -20,6 +20,15 @@ public class ClientService {
 
     @Transactional
     public ClientDTO insert(ClientDTO dto) {
+        if (clientRepository.existsByCpf(dto.getCpf())) {
+            throw new DatabaseException("CPF already registered");
+        }
+        if (clientRepository.existsByEmail(dto.getEmail())) {
+            throw new DatabaseException("Email already registered");
+        }
+        if (clientRepository.existsByPhone(dto.getPhone())) {
+            throw new DatabaseException("Phone already registered");
+        }
         Client client = new Client();
         client.setName(dto.getName());
         client.setCpf(dto.getCpf());

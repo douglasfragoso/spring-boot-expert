@@ -28,6 +28,9 @@ public class ProductService {
 
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
+        if (productRepository.existsByName(dto.getName())) {
+            throw new DatabaseException("Product already registered");
+        }
         Product product = new Product();
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());

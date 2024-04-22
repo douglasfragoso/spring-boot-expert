@@ -1,6 +1,8 @@
 package spring.boot.expert.curso.controller.exception;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import spring.boot.expert.curso.service.exception.DatabaseException;
 import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
 
@@ -18,7 +21,8 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandartError> resourceNotFound(ExceptionBusinessRules e, HttpServletRequest request) {
         String error = "Resource not found";
         HttpStatus status = HttpStatus.NOT_FOUND;
-        StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(),
+                request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 
@@ -26,8 +30,28 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandartError> database(DatabaseException e, HttpServletRequest request) {
         String error = "Database error";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(),
+                request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
+    // 
     
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ValidationError> handleConstraintViolationException(ConstraintViolationException ex) {
+        List<String> errors = ex.getConstraintViolations().stream()
+                .map(violation -> violation.getMessage())
+                .collect(Collectors.toList());
+
+        ValidationError errorResponse = new ValidationError(
+                Instant.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Error",
+                errors,
+                "/clients"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+
 }

@@ -44,10 +44,10 @@ public class OrderService {
     @Transactional
     public OrderInfoDTO insert(OrderDTO orderDTO) {
         Order order = new Order();
-        Client client = clientID(orderDTO);
+        Client client = clientId(orderDTO);
 
         order.setDate(Instant.now());
-        order.setClient(clientID(orderDTO));
+        order.setClient(clientId(orderDTO));
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         List<OrderItem> items = items(order, orderDTO.getItems());
@@ -86,7 +86,7 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
         OrderDTO orderDTO = turnDTO(order);
-        Client client = clientID(orderDTO);
+        Client client = clientId(orderDTO);
         return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
                 order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
@@ -94,13 +94,16 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderDTO> findByClient(Pageable pageable, Integer client) {
         Page<Order> list = orderRepository.findByClient(pageable, client);
+        if (list.isEmpty()) {
+            throw new ExceptionBusinessRules("Client not found, id does not exist: " + client);
+        }
         return list.map(x -> turnDTO(x));
     }
 
-    public Client clientID(OrderDTO orderDTO) {
+    public Client clientId(OrderDTO orderDTO) {
         Integer idClient = orderDTO.getClient();
         Client client = clientRepository.findById(idClient)
-                .orElseThrow(() -> new ExceptionBusinessRules("Client not found"));
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + idClient));
         return client;
     }
 
