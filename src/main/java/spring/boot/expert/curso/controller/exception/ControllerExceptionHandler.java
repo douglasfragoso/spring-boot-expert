@@ -35,23 +35,18 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    // 
-    
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidationError> handleConstraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ValidationError> ConstraintViolationException(ConstraintViolationException ex,
+            HttpServletRequest request) {
+        String error = "Validation Error";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         List<String> errors = ex.getConstraintViolations().stream()
                 .map(violation -> violation.getMessage())
                 .collect(Collectors.toList());
 
-        ValidationError errorResponse = new ValidationError(
-                Instant.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Error",
-                errors,
-                "/clients"
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        ValidationError err = new ValidationError(Instant.now(), status.value(), error, errors,
+                request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
-    
 
 }

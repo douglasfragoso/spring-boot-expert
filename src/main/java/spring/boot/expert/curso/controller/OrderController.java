@@ -3,6 +3,8 @@ package spring.boot.expert.curso.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +39,9 @@ public class OrderController {
     }
 
     @GetMapping(value = "/client/{id}")
-    public ResponseEntity<Page<OrderDTO>> findByNameLike(Pageable pageable, @PathVariable("id") Integer client) {
+    public ResponseEntity<Page<OrderDTO>> findByClient(
+        @PageableDefault(size = 10, page = 0, sort = { "id" }, direction = Direction.ASC) 
+        Pageable pageable, @PathVariable("id") Integer client) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findByClient(pageable, client));
     }
 

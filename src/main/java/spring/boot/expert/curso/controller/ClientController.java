@@ -3,6 +3,8 @@ package spring.boot.expert.curso.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,8 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping
-    public ResponseEntity<Page<ClientDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<ClientDTO>> findAll(
+        @PageableDefault(size = 10, page = 0, sort = { "name" }, direction = Direction.ASC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.findAll(pageable));
     }
 
@@ -37,7 +40,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/name/{name}")
-    public ResponseEntity<Page<ClientDTO>> findByNameLike(Pageable pageable, @PathVariable("name") String name) {
+    public ResponseEntity<Page<ClientDTO>> findByNameLike(
+        @PageableDefault(size = 10, page = 0, sort = { "name" }, direction = Direction.ASC) Pageable pageable,
+        @PathVariable("name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.findByNameLike(pageable, name));
     }
 

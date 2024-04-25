@@ -108,9 +108,6 @@ public class OrderService {
     }
 
     public List<OrderItem> items(Order order, List<OrderItemDTO> items) {
-        if (items.isEmpty()) {
-            throw new ExceptionBusinessRules("Order must have at least one item");
-        }
         return items.stream().map(dto -> {
             Integer idProduct = dto.getProduct();
             Product product = productRepository.findById(idProduct)

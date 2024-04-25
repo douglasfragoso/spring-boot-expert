@@ -43,6 +43,9 @@ public class ProductService {
     public ProductDTO update(Integer id, ProductDTO dto) {
         Product product = productRepository.findById(id).
             orElseThrow(() -> new ExceptionBusinessRules("Product not found, id does not exist: " + id));
+        if (productRepository.existsByName(dto.getName())) {
+                throw new DatabaseException("Product already registered");
+        }
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());

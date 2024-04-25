@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,11 +30,11 @@ public class Product implements Serializable{
     private Integer id;
 
     @Column(name = "name", length = 100, unique = true)
-    @NotEmpty(message = "The field name is required")
+    @NotBlank(message = "The field name is required")
     private String name;
 
     @Column(name = "description", length = 300)
-    @NotEmpty(message = "The field description is required")
+    @NotBlank(message = "The field description is required")
     private String description;
 
     @Column(name = "price", precision = 1000, scale = 2)//precision é o tamanho do campo e scale é a quantidade de casas decimais
