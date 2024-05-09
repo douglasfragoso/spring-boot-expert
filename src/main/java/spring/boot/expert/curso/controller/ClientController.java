@@ -22,7 +22,7 @@ import spring.boot.expert.curso.dto.ClientDTO;
 import spring.boot.expert.curso.service.ClientService;
 
 @RestController
-@RequestMapping(value = "/clients")
+@RequestMapping(value = "/clients", produces = "application/json")
 public class ClientController {
 
     @Autowired

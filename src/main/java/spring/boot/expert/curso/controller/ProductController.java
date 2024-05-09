@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import spring.boot.expert.curso.dto.ProductDTO;
 import spring.boot.expert.curso.service.ProductService;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping(value = "/products", produces = "application/json")
 public class ProductController {
     
     @Autowired
@@ -38,7 +39,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> insert (@RequestBody ProductDTO dto){
+    public ResponseEntity<ProductDTO> insert (@Valid @RequestBody ProductDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.insert(dto));
     }
 

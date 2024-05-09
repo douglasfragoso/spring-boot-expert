@@ -22,7 +22,7 @@ import spring.boot.expert.curso.dto.OrderStatusDTO;
 import spring.boot.expert.curso.service.OrderService;
 
 @RestController
-@RequestMapping(value = "/orders")
+@RequestMapping(value = "/orders", produces = "application/json")
 public class OrderController {
 
     @Autowired

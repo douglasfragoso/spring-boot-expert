@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -30,6 +31,15 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandartError> database(DatabaseException e, HttpServletRequest request) {
         String error = "Database error";
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(),
+                request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<StandartError> authentication(BadCredentialsException e, HttpServletRequest request) {
+        String error = "Authentication error";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         StandartError err = new StandartError(Instant.now(), status.value(), error, e.getMessage(),
                 request.getRequestURI());
         return ResponseEntity.status(status).body(err);

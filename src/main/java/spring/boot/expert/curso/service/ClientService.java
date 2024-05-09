@@ -3,6 +3,7 @@ package spring.boot.expert.curso.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,9 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public ClientDTO insert(ClientDTO dto) {
@@ -33,9 +37,14 @@ public class ClientService {
         client.setName(dto.getName());
         client.setCpf(dto.getCpf());
         client.setEmail(dto.getEmail());
+
+        String codePassaword = passwordEncoder.encode(dto.getUserPassword());
+        client.setUserPassword(codePassaword);
+        
         client.setPhone(dto.getPhone());
+        client.setProfile(dto.getProfile());
         client = clientRepository.save(client);
-        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone());
+        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(), client.getProfile());
     }
 
     @Transactional
@@ -48,7 +57,7 @@ public class ClientService {
         client.setEmail(dto.getEmail());
         client.setPhone(dto.getPhone());
         client = clientRepository.save(client);
-        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone());
+        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(), client.getProfile());
     }
 
     @Transactional
@@ -64,20 +73,20 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Page<ClientDTO> findAll(Pageable pageable) {
         Page<Client> list = clientRepository.findAll(pageable);
-        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone()));
+        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(), x.getProfile()));
     }
 
     @Transactional(readOnly = true)
     public ClientDTO findById(Integer id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
-        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone());
+        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(), client.getProfile());
     }
 
     @Transactional(readOnly = true)
     public Page<ClientDTO> findByNameLike(Pageable pageable, String name) {
         Page<Client> list = clientRepository.findByNameLike(pageable, "%" + name + "%");
-        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone()));
+        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(), x.getProfile()));
     }
 
 }
