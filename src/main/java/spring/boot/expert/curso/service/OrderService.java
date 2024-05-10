@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,7 @@ public class OrderService {
 
     @Autowired
     private ClientRepository clientRepository;
+    Client client;
 
     @Autowired
     private ProductRepository productRepository;
@@ -92,8 +96,12 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderDTO> findByClient(Pageable pageable, Integer client) {
-        Page<Order> list = orderRepository.findByClient(pageable, client);
+    public Page<OrderDTO> findByClient(Pageable pageable) {
+
+        searchClient();
+        Integer idClient = client.getId();
+
+        Page<Order> list = orderRepository.findByClient(pageable, idClient);
         if (list.isEmpty()) {
             throw new ExceptionBusinessRules("Client not found, id does not exist: " + client);
         }
@@ -144,5 +152,13 @@ public class OrderService {
                 order.getItems().stream().map(x -> new OrderItemDTO(x.getProduct().getId(), x.getQuantity()))
                         .collect(Collectors.toList()));
     }
+
+    private void searchClient() {
+		Authentication autenticado = SecurityContextHolder.getContext().getAuthentication();
+		if(!(autenticado instanceof AnonymousAuthenticationToken)) {
+			String uselog = autenticado.getName();
+			client = clientRepository.searchClient(uselog).get(0);
+		}
+	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,21 +35,25 @@ public class ProductController {
     }
 
     @GetMapping(value = "/id/{id}")
+    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
     public ResponseEntity<ProductDTO> findById(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
     public ResponseEntity<ProductDTO> insert (@Valid @RequestBody ProductDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.insert(dto));
     }
 
     @PutMapping(value = "/id/{id}")
+    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
     public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody ProductDTO dto){
         return ResponseEntity.status(HttpStatus.OK).body(productService.update(id, dto));
     }
 
     @DeleteMapping(value = "/id/{id}")
+    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id){
         productService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Product deleted");

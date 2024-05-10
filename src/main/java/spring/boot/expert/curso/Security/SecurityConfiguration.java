@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(customizer -> {
                     customizer.requestMatchers(HttpMethod.GET, "/products").permitAll();
                     customizer.requestMatchers(HttpMethod.POST, "/auth/v1/login").permitAll();
+                    customizer.requestMatchers(HttpMethod.POST, "/clients/register").permitAll();
                     customizer.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

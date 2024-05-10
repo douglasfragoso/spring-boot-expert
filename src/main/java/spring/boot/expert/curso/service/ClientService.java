@@ -3,12 +3,16 @@ package spring.boot.expert.curso.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.boot.expert.curso.dto.ClientDTO;
 import spring.boot.expert.curso.model.Client;
+import spring.boot.expert.curso.model.Profile;
 import spring.boot.expert.curso.repository.ClientRepository;
 import spring.boot.expert.curso.service.exception.DatabaseException;
 import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
@@ -18,6 +22,7 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+    Client client;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -42,15 +47,18 @@ public class ClientService {
         client.setUserPassword(codePassaword);
         
         client.setPhone(dto.getPhone());
-        client.setProfile(dto.getProfile());
+        client.setProfile(new Profile(2));
         client = clientRepository.save(client);
         return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(), client.getProfile());
     }
 
     @Transactional
-    public ClientDTO update(Integer id, ClientDTO dto) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
+    public ClientDTO update(ClientDTO dto) {
+        searchClient();
+        Integer idClient = client.getId();
+
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: "));
         ;
         client.setName(dto.getName());
         client.setCpf(dto.getCpf());
@@ -88,5 +96,13 @@ public class ClientService {
         Page<Client> list = clientRepository.findByNameLike(pageable, "%" + name + "%");
         return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(), x.getProfile()));
     }
+
+    private void searchClient() {
+		Authentication autenticado = SecurityContextHolder.getContext().getAuthentication();
+		if(!(autenticado instanceof AnonymousAuthenticationToken)) {
+			String uselog = autenticado.getName();
+			client = clientRepository.searchClient(uselog).get(0);
+		}
+	}
 
 }

@@ -4,10 +4,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +55,20 @@ public class ControllerExceptionHandler {
         List<String> errors = ex.getConstraintViolations().stream()
                 .map(violation -> violation.getMessage())
                 .collect(Collectors.toList());
+
+        ValidationError err = new ValidationError(Instant.now(), status.value(), error, errors,
+                request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationError> MethodArgumentNotValidException(MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+        String error = "Validation Error";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        List<String> errors = ex.getBindingResult().getAllErrors().stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .collect(Collectors.toList());
 
         ValidationError err = new ValidationError(Instant.now(), status.value(), error, errors,
                 request.getRequestURI());
