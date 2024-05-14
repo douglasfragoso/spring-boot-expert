@@ -36,12 +36,12 @@ public class OrderController {
     }
     
     @GetMapping(value = "/id/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
     public ResponseEntity<OrderInfoDTO> findById(@PathVariable("id") Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(id));
     }
 
-    @GetMapping(value = "/client/{id}")
+    @GetMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Page<OrderDTO>> findByClient(
         @PageableDefault(size = 10, page = 0, sort = { "id" }, direction = Direction.ASC) 
@@ -50,16 +50,16 @@ public class OrderController {
     }
 
     @PutMapping(value = "/status/id/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
     public ResponseEntity<OrderInfoDTO> update (@PathVariable("id") Integer id, @RequestBody OrderStatusDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.update(id, dto));
     }
 
     @DeleteMapping(value = "/id/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'USER')")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id){
         orderService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Order deleted");
+        return ResponseEntity.status(HttpStatus.OK).body("Order canceled");
     }
   
 }

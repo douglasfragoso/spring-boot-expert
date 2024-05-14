@@ -24,38 +24,46 @@ import spring.boot.expert.curso.service.ProductService;
 @RestController
 @RequestMapping(value = "/products", produces = "application/json")
 public class ProductController {
-    
+
     @Autowired
     private ProductService productService;
 
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> findAll(
-        @PageableDefault(size = 10, page = 0, sort = { "name" }, direction = Direction.ASC) Pageable pageable){
+            @PageableDefault(size = 10, page = 0, sort = { "name" }, direction = Direction.ASC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findAll(pageable));
     }
 
     @GetMapping(value = "/id/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
-    public ResponseEntity<ProductDTO> findById(@PathVariable Integer id){
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
+    public ResponseEntity<ProductDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
-    public ResponseEntity<ProductDTO> insert (@Valid @RequestBody ProductDTO dto){
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
+    public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.insert(dto));
     }
 
     @PutMapping(value = "/id/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
-    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody ProductDTO dto){
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
+    public ResponseEntity<ProductDTO> update(@PathVariable Integer id, @RequestBody ProductDTO dto) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.update(id, dto));
     }
 
     @DeleteMapping(value = "/id/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'MASTER')")
-    public ResponseEntity<String> delete(@PathVariable("id") Integer id){
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
         productService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Product deleted");
+    }
+
+    @GetMapping(value = "/name/{name}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'USER')")
+    public ResponseEntity<Page<ProductDTO>> findByNameLike(
+            @PageableDefault(size = 10, page = 0, sort = { "name" }, direction = Direction.ASC) Pageable pageable,
+            @PathVariable("name") String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findByNameLike(pageable, name));
     }
 }

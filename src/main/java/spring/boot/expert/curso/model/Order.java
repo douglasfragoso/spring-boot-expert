@@ -2,7 +2,7 @@ package spring.boot.expert.curso.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class Order implements Serializable {
     @Getter @Setter
     @Column(name = "date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
-    private Instant date;
+    private ZonedDateTime date;
 
     @Getter 
     @Column(name = "total", precision = 100, scale = 2)
@@ -61,7 +61,7 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
     
-    public Order(Integer id, Client client, Instant date, BigDecimal total, OrderStatus status, List<OrderItem> items) {
+    public Order(Integer id, Client client, ZonedDateTime date, BigDecimal total, OrderStatus status, List<OrderItem> items) {
         this.id = id;
         this.client = client;
         this.date = date;

@@ -79,4 +79,11 @@ public class ProductService {
         Page<Product> list = productRepository.findAll(pageable);
         return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
     }
+
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findByNameLike(Pageable pageable, String name) {
+        Page<Product> list = productRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
+        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
+    }
+
 }

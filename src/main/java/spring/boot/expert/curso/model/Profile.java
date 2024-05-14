@@ -25,4 +25,5 @@ public class Profile {
     public Profile(Integer id){
         this.id = id;
     }
+    
 }

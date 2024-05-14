@@ -49,13 +49,13 @@ public class Client implements UserDetails {
     private String name;
 
     @Getter @Setter
-    @Column(name = "cpf", length = 11, unique = true)
+    @Column(name = "cpf", length = 11, unique = true, updatable = false)
     @NotBlank(message = "The field cpf is required")
     @CPF(message = "The CPF is invalid")
     private String cpf;
 
     @Getter @Setter
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, updatable = false)
     @NotBlank(message = "The field email is required")
     @Email(message = "The email is invalid")
     private String email;
@@ -67,7 +67,7 @@ public class Client implements UserDetails {
 
     @Getter @Setter
     @JsonFormat(pattern = "\\(d{2})-\\d{4,5}.-\\{4}")
-    @Column(name = "phone", length = 11, unique = true)
+    @Column(name = "phone", length = 11, unique = true, updatable = false)
     @NotBlank(message = "The field phone is required")
     private String phone;
 

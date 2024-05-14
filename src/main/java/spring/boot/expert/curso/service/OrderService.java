@@ -1,6 +1,7 @@
 package spring.boot.expert.curso.service;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,10 +49,15 @@ public class OrderService {
     @Transactional
     public OrderInfoDTO insert(OrderDTO orderDTO) {
         Order order = new Order();
-        Client client = clientId(orderDTO);
+        
+        searchClient();
+        Integer idClient = client.getId();
+        
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + idClient));
 
-        order.setDate(Instant.now());
-        order.setClient(clientId(orderDTO));
+        order.setDate(Instant.now().atZone(ZoneId.of("America/Sao_Paulo")));
+        order.setClient(client);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         List<OrderItem> items = items(order, orderDTO.getItems());
@@ -71,7 +77,8 @@ public class OrderService {
     public void delete(Integer id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
-        orderRepository.delete(order);
+            order.setStatus(OrderStatus.valueOf(4));
+            order = orderRepository.save(order);
     }
 
     @Transactional
@@ -90,7 +97,6 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
         OrderDTO orderDTO = turnDTO(order);
-        Client client = clientId(orderDTO);
         return new OrderInfoDTO(order.getId(), order.getClient().getId(), client.getName(), order.getDate(),
                 order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
@@ -106,13 +112,6 @@ public class OrderService {
             throw new ExceptionBusinessRules("Client not found, id does not exist: " + client);
         }
         return list.map(x -> turnDTO(x));
-    }
-
-    public Client clientId(OrderDTO orderDTO) {
-        Integer idClient = orderDTO.getClient();
-        Client client = clientRepository.findById(idClient)
-                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + idClient));
-        return client;
     }
 
     public List<OrderItem> items(Order order, List<OrderItemDTO> items) {
@@ -157,7 +156,7 @@ public class OrderService {
 		Authentication autenticado = SecurityContextHolder.getContext().getAuthentication();
 		if(!(autenticado instanceof AnonymousAuthenticationToken)) {
 			String uselog = autenticado.getName();
-			client = clientRepository.searchClient(uselog).get(0);
+			client = clientRepository.findByEmail(uselog);
 		}
 	}
 
