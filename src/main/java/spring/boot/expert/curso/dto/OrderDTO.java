@@ -3,7 +3,7 @@ package spring.boot.expert.curso.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +26,9 @@ public class OrderDTO implements Serializable {
     @Getter @Setter
     private Integer client;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "America/Sao_Paulo")
     @Getter @Setter
-    private ZonedDateTime date;
+    private Instant date;
     
     @Getter @Setter
     private BigDecimal total;
@@ -39,7 +39,7 @@ public class OrderDTO implements Serializable {
     @Getter 
     private List<OrderItemDTO> items = new ArrayList<>();
 
-    public OrderDTO(Integer id, Integer client, ZonedDateTime date, BigDecimal total, OrderStatus status, List<OrderItemDTO> items) {
+    public OrderDTO(Integer id, Integer client, Instant date, BigDecimal total, OrderStatus status, List<OrderItemDTO> items) {
         this.id = id;
         this.client = client;
         this.date = date;

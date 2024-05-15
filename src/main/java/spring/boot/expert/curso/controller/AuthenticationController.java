@@ -38,8 +38,7 @@ public class AuthenticationController {
 
             String token = tokenService.generateToken(loggedUser);
 
-            ClientLoginDTO clientDTO = new ClientLoginDTO(loggedUser.getId(), loggedUser.getName(),
-                    loggedUser.getProfile(), token);
+            ClientLoginDTO clientDTO = new ClientLoginDTO(loggedUser.getId(), loggedUser.getName(), token);
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(clientDTO);
     }

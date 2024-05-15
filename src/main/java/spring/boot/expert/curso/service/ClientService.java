@@ -12,10 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import spring.boot.expert.curso.dto.ClientDTO;
 import spring.boot.expert.curso.dto.ClientProfileDTO;
+import spring.boot.expert.curso.enums.Profile;
 import spring.boot.expert.curso.model.Client;
-import spring.boot.expert.curso.model.Profile;
 import spring.boot.expert.curso.repository.ClientRepository;
-import spring.boot.expert.curso.repository.ProfileRepository;
 import spring.boot.expert.curso.service.exception.DatabaseException;
 import spring.boot.expert.curso.service.exception.ExceptionBusinessRules;
 
@@ -28,9 +27,6 @@ public class ClientService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ProfileRepository profileRepository;
 
     @Transactional
     public ClientDTO insert(ClientDTO dto) {
@@ -53,12 +49,11 @@ public class ClientService {
 
         client.setPhone(dto.getPhone());
 
-        Profile profile = profileRepository.findById(3).get();
-        client.setProfile(profile);
+        client.setProfile(Profile.USER);
 
         client = clientRepository.save(client);
         return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(),
-                client.getProfile().getName());
+                client.getProfile());
     }
 
     @Transactional
@@ -77,7 +72,7 @@ public class ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
         return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(),
-                client.getProfile().getName());
+                client.getProfile());
     }
 
     @Transactional
@@ -94,7 +89,7 @@ public class ClientService {
     public Page<ClientDTO> findAll(Pageable pageable) {
         Page<Client> list = clientRepository.findAll(pageable);
         return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
-                x.getProfile().getName()));
+                x.getProfile()));
     }
 
     @Transactional(readOnly = true)
@@ -102,14 +97,14 @@ public class ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
         return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(),
-                client.getProfile().getName());
+                client.getProfile());
     }
 
     @Transactional(readOnly = true)
     public Page<ClientDTO> findByNameLike(Pageable pageable, String name) {
         Page<Client> list = clientRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
         return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
-                x.getProfile().getName()));
+                x.getProfile()));
     }
 
     private void searchClient() {

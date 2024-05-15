@@ -37,7 +37,7 @@ public class Product implements Serializable{
     @NotBlank(message = "The field description is required")
     private String description;
 
-    @Column(name = "price", precision = 1000, scale = 2)//precision é o tamanho do campo e scale é a quantidade de casas decimais
+    @Column(name = "price", precision = 10, scale = 2)//precision é o tamanho do campo e scale é a quantidade de casas decimais
     @DecimalMin(value = "0.01", message = "The minimum value for the field price is 0.01")
     private BigDecimal price;
     

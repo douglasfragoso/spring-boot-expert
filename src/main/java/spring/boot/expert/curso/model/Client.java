@@ -17,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -27,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import spring.boot.expert.curso.enums.Profile;
 
 @EqualsAndHashCode(of = "id")
 @ToString
@@ -71,10 +71,8 @@ public class Client implements UserDetails {
     @NotBlank(message = "The field phone is required")
     private String phone;
 
-    @Getter @Setter
-    @ManyToOne
-    @JoinColumn(name = "perfil_id")
-    private Profile profile; 
+    @JoinColumn(name = "profile")
+    private Integer profile; 
 
     @Getter 
     @OneToMany(mappedBy = "client")
@@ -89,13 +87,23 @@ public class Client implements UserDetails {
         this.phone = phone;
     }
 
+    public Profile getProfile() {
+        return Profile.valueOf(profile);
+    }
+
+    public void setProfile(Profile profile) {
+        if(profile != null){
+            this.profile = profile.getCode();
+    }
+
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (profile.getName().equalsIgnoreCase("Master")){
+        if (profile.equals(3)){
             return List.of(new SimpleGrantedAuthority("ROLE_MASTER"));
-        } else if (profile.getName().equalsIgnoreCase("Admin")) {
+        } else if (profile.equals(1)) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else if (profile.getName().equalsIgnoreCase("User")) {
+        } else if (profile.equals(2)) {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_GUEST"));

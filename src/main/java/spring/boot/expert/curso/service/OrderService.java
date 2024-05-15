@@ -1,7 +1,6 @@
 package spring.boot.expert.curso.service;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +55,7 @@ public class OrderService {
         Client client = clientRepository.findById(idClient)
                 .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + idClient));
 
-        order.setDate(Instant.now().atZone(ZoneId.of("America/Sao_Paulo")));
+        order.setDate(Instant.now());
         order.setClient(client);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
