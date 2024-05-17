@@ -72,25 +72,6 @@ public class OrderService {
                 order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
     }
 
-    @Transactional
-    public void delete(Integer id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
-            order.setStatus(OrderStatus.valueOf(4));
-            order = orderRepository.save(order);
-    }
-
-    @Transactional
-    public OrderInfoDTO update(Integer id, OrderStatusDTO dto){
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
-        order.setStatus(OrderStatus.valueOf(dto.getStatus()));
-        order = orderRepository.save(order);
-        OrderDTO orderDTO = turnDTO(order);
-        return new OrderInfoDTO(order.getId(), order.getClient().getId(), order.getClient().getName(), order.getDate(),
-                order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
-    }
-
     @Transactional(readOnly = true)
     public OrderInfoDTO findById(Integer id) {
         Order order = orderRepository.findById(id)
@@ -111,6 +92,25 @@ public class OrderService {
             throw new ExceptionBusinessRules("Client not found, id does not exist: " + client);
         }
         return list.map(x -> turnDTO(x));
+    }
+
+    @Transactional
+    public OrderInfoDTO update(Integer id, OrderStatusDTO dto){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
+        order.setStatus(OrderStatus.valueOf(dto.getStatus()));
+        order = orderRepository.save(order);
+        OrderDTO orderDTO = turnDTO(order);
+        return new OrderInfoDTO(order.getId(), order.getClient().getId(), order.getClient().getName(), order.getDate(),
+                order.getTotal(), order.getStatus(), itemsInfo(order, orderDTO.getItems()));
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
+            order.setStatus(OrderStatus.valueOf(4));
+            order = orderRepository.save(order);
     }
 
     public List<OrderItem> items(Order order, List<OrderItemDTO> items) {
@@ -158,5 +158,4 @@ public class OrderService {
 			client = clientRepository.findByEmail(uselog);
 		}
 	}
-
 }

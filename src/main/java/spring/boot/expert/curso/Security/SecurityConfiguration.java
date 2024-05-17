@@ -31,11 +31,24 @@ public class SecurityConfiguration {
                     customizer.requestMatchers(HttpMethod.GET, "/products").permitAll();
                     customizer.requestMatchers(HttpMethod.POST, "/auth/v1/login").permitAll();
                     customizer.requestMatchers(HttpMethod.POST, "/clients/register").permitAll();
+                    customizer.requestMatchers(AUTH_WHITELIST).permitAll();
                     customizer.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    private static final String[] AUTH_WHITELIST = {
+        "/v2/api-docs",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**"
+};
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {

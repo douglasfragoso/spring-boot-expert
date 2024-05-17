@@ -56,6 +56,28 @@ public class ClientService {
                 client.getProfile());
     }
 
+    @Transactional(readOnly = true)
+    public Page<ClientDTO> findAll(Pageable pageable) {
+        Page<Client> list = clientRepository.findAll(pageable);
+        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
+                x.getProfile()));
+    }
+
+    @Transactional(readOnly = true)
+    public ClientDTO findById(Integer id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
+        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(),
+                client.getProfile());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ClientDTO> findByNameLike(Pageable pageable, String name) {
+        Page<Client> list = clientRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
+        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
+                x.getProfile()));
+    }
+
     @Transactional
     public void update(ClientDTO dto) {
         searchClient();
@@ -84,29 +106,7 @@ public class ClientService {
         }
         clientRepository.delete(client);
     }
-
-    @Transactional(readOnly = true)
-    public Page<ClientDTO> findAll(Pageable pageable) {
-        Page<Client> list = clientRepository.findAll(pageable);
-        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
-                x.getProfile()));
-    }
-
-    @Transactional(readOnly = true)
-    public ClientDTO findById(Integer id) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ExceptionBusinessRules("Client not found, id does not exist: " + id));
-        return new ClientDTO(client.getId(), client.getName(), client.getCpf(), client.getEmail(), client.getPhone(),
-                client.getProfile());
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ClientDTO> findByNameLike(Pageable pageable, String name) {
-        Page<Client> list = clientRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
-        return list.map(x -> new ClientDTO(x.getId(), x.getName(), x.getCpf(), x.getEmail(), x.getPhone(),
-                x.getProfile()));
-    }
-
+    
     private void searchClient() {
         Authentication autenticado = SecurityContextHolder.getContext().getAuthentication();
         if (!(autenticado instanceof AnonymousAuthenticationToken)) {

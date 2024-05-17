@@ -54,12 +54,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public Page<ProductDTO> findAll(Pageable pageable) {
+        Page<Product> list = productRepository.findAll(pageable);
+        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
+    }
+   
+    @Transactional(readOnly = true)
     public ProductDTO findById(Integer id) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new ExceptionBusinessRules("Product not found, id does not exist: " + id));
         return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice());
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findByNameLike(Pageable pageable, String name) {
+        Page<Product> list = productRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
+        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
+    }
     @Transactional
     public void delete(Integer id) {
         Product product = productRepository.findById(id)
@@ -73,17 +84,4 @@ public class ProductService {
         }
         productRepository.delete(product);
     }
-
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(Pageable pageable) {
-        Page<Product> list = productRepository.findAll(pageable);
-        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> findByNameLike(Pageable pageable, String name) {
-        Page<Product> list = productRepository.findByNameLikeIgnoreCase(pageable, "%" + name + "%");
-        return list.map(x -> new ProductDTO(x.getId(), x.getName(), x.getDescription(), x.getPrice()));
-    }
-
 }

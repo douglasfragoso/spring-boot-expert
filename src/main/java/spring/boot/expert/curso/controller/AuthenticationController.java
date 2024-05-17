@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import spring.boot.expert.curso.dto.AuthenticationDTO;
 import spring.boot.expert.curso.dto.ClientLoginDTO;
@@ -19,6 +21,7 @@ import spring.boot.expert.curso.service.TokenService;
 
 @RestController
 @RequestMapping(value = "/auth", produces = "application/json")
+@Tag(name = "Auth", description = "Authentication API")
 public class AuthenticationController {
 
     @Autowired
@@ -28,6 +31,7 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/v1/login")
+    @Operation(summary = "Client login", description = "Client login", tags = { "Auth" , "POST"})
     ResponseEntity<ClientLoginDTO> clientLogin(@Valid @RequestBody AuthenticationDTO authenticationDTO) {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
