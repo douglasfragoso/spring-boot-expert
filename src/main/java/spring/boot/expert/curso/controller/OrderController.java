@@ -18,7 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import spring.boot.expert.curso.controller.exception.StandartError;
+import spring.boot.expert.curso.controller.exception.ValidationError;
 import spring.boot.expert.curso.dto.OrderDTO;
 import spring.boot.expert.curso.dto.OrderInfoDTO;
 import spring.boot.expert.curso.dto.OrderStatusDTO;
@@ -33,6 +39,11 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Successfully created", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = StandartError.class)))})
     @Operation(summary = "Insert Order", description = "Insert Order, only for User", tags = {"POST"})
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<OrderInfoDTO> insert (@RequestBody OrderDTO dto){
@@ -40,6 +51,10 @@ public class OrderController {
     }
 
     @GetMapping(value = "/id/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully find by Id", content = @Content(schema = @Schema(implementation = OrderInfoDTO.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = StandartError.class)))})
     @Operation(summary = "Find Order by Id", description = "Find Order by Id, only for Admin and Master", tags = {"GET"})
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
     public ResponseEntity<OrderInfoDTO> findById(@PathVariable("id") Integer id){
@@ -47,6 +62,10 @@ public class OrderController {
     }
 
     @GetMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully find by client", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = StandartError.class)))})
     @Operation(summary = "Find Order by Client", description = "Find Order by Client, only for User", tags = {"GET"})
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Page<OrderDTO>> findByClient(
@@ -56,13 +75,22 @@ public class OrderController {
     }
 
     @PutMapping(value = "/status/id/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully update", content = @Content(schema = @Schema(implementation = OrderInfoDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = StandartError.class)))})
     @Operation(summary = "Update Order Status", description = "Update Order Status, only for Admin and Master", tags = {"PUT"})
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
     public ResponseEntity<OrderInfoDTO> update (@PathVariable("id") Integer id, @RequestBody OrderStatusDTO dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.update(id, dto));
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.update(id, dto));
     }
 
     @DeleteMapping(value = "/id/{id}")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully delete", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = StandartError.class)))})
     @Operation(summary = "Delete Order by Id", description = "Delete Order by Id", tags = {"DELETE"})
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'USER')")
     public ResponseEntity<String> delete(@PathVariable("id") Integer id){
