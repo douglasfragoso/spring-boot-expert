@@ -10,6 +10,5 @@ import spring.boot.expert.curso.model.Order;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT order FROM Order order WHERE order.client.id = :client")
-    Page<Order> findByClient(Pageable pegeable, Integer client);
-
+    Page<Order> findByClient(Pageable pegeable, Integer client); 
 }

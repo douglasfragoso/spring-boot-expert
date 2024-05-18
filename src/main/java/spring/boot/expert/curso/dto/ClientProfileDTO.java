@@ -3,13 +3,11 @@ package spring.boot.expert.curso.dto;
 import java.io.Serializable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Represents a profile in the system")
 public class ClientProfileDTO implements Serializable {

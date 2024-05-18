@@ -50,6 +50,17 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.insert(dto));
     }
 
+    @GetMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully find all", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation =  ValidationError.class)))})
+    @Operation(summary = "Find All Orders", description = "Find All Orders, only for Admin and Master", tags = {"GET"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER')")
+    public ResponseEntity<Page<OrderDTO>> findAll(
+        @PageableDefault(size = 10, page = 0, sort = { "date" }, direction = Direction.ASC) Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.findAll(pageable));
+    }
+
     @GetMapping(value = "/id/{id}")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Successfully find by Id", content = @Content(schema = @Schema(implementation = OrderInfoDTO.class))),
@@ -61,7 +72,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(id));
     }
 
-    @GetMapping
+    @GetMapping(value = "/client")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Successfully find by client", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ValidationError.class))),

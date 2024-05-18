@@ -73,6 +73,12 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    public Page<OrderDTO> findAll(Pageable pageable) {
+        Page<Order> list = orderRepository.findAll(pageable);
+        return list.map(x -> turnDTO(x));
+    }
+   
+    @Transactional(readOnly = true)
     public OrderInfoDTO findById(Integer id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ExceptionBusinessRules("Order not found, id does not exist: " + id));
