@@ -4,6 +4,7 @@ package spring.boot.expert.curso.dto;
 import java.io.Serializable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Represents the status of the order")
 public class OrderStatusDTO implements Serializable {
 

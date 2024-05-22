@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+
 @Schema(description = "Represents a product in the system")
 public class ProductDTO implements Serializable {
 

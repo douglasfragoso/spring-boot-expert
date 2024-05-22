@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import spring.boot.expert.curso.enums.OrderStatus;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Represents an order in the system")
 public class OrderInfoDTO implements Serializable {
 
