@@ -104,7 +104,7 @@ INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (2, 2, 2);
 INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (3, 3, 1);
 INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (4, 4, 2);
 ```
-### Obs: senha para login de qualquer cadastro do seed: 123456
+### Obs! Senha para login de qualquer cadastro do seed: 123456
 
 ## Criação de arquivo JAR ou WAR pelo perfis no `pom.xml`
 
@@ -135,3 +135,5 @@ INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (4, 4, 2);
     ```sh
     ./mvnw clean package -P producao
     ```
+
+  Feito com carinho por Douglas Fragoso 👊
