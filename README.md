@@ -61,7 +61,7 @@ O projeto consiste numa API RESTFul com Java e Spring boot para fazer requisiç�
 1. Clone o projeto para sua IDE preferida.
 2. Execute o projeto Spring Boot com spring.profiles.active=${APP_PROFILE:test} no aplication.properties.
 3. Importe a collection para o Postman através do arquivo [Collection](<Spring Boot Expert.postman_collection.json>).
-4. Utilize as rotas fornecidas para realizar requisições ao sistema.
+4. Utilize as rotas fornecidas para realizar requisições ao sistema, lembrando de passar o token gerado na autenticação.
 5. Verifique a documentação no Swagger acessando: [Swagger UI](http://localhost:8080/swagger-ui/index.html)
 
 
@@ -75,6 +75,63 @@ O projeto consiste numa API RESTFul com Java e Spring boot para fazer requisiç�
 2. Abra o MySQL Workbench
   - certifique-se das propriedades no [application-dev.properties](src/main/resources/application-dev.properties)
 4. Execute o projeto Spring Boot com spring.profiles.active=${APP_PROFILE:dev} no aplication.properties.
-5. Importe a collection para o Postman através do arquivo da [Collection](<Spring Boot Expert.postman_collection.json>).
-6. Utilize as rotas fornecidas para realizar requisições ao sistema.
-7. Verifique a documentação no Swagger acessando: [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+5. Crie o seed disponível. 
+6. Importe a collection para o Postman através do arquivo da [Collection](<Spring Boot Expert.postman_collection.json>).
+7. Utilize as rotas fornecidas para realizar requisições ao sistema, lembrando de passar o token gerado na autenticação.
+8. Verifique a documentação no Swagger acessando: [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+
+### Seed para Data Base
+
+```sql
+INSERT INTO tb_client (name, cpf, email, password, phone, profile) VALUES ('Douglas Fragoso', '12345678900', 'douglas@email.com', '$2a$12$Up0GoWwsrIAcdWGvuzTPuu/4OgMYIuzNA2EAEidm/DUPfksgFYGuG', '81523456789', 3);
+INSERT INTO tb_client (name, cpf, email, password, phone, profile) VALUES ('Maria Silva', '12345678901', 'maria@email.com','$2a$12$Up0GoWwsrIAcdWGvuzTPuu/4OgMYIuzNA2EAEidm/DUPfksgFYGuG', '81123458789', 2);
+INSERT INTO tb_client (name, cpf, email, password, phone, profile) VALUES ('João Pereira', '12345678902', 'joao@email.com', '$2a$12$Up0GoWwsrIAcdWGvuzTPuu/4OgMYIuzNA2EAEidm/DUPfksgFYGuG','81113456789', 1);
+INSERT INTO tb_client (name, cpf, email, password, phone, profile) VALUES ('Ana Fragoso', '12345678903', 'ana@email.com', '$2a$12$Up0GoWwsrIAcdWGvuzTPuu/4OgMYIuzNA2EAEidm/DUPfksgFYGuG', '81823459789', 1);
+
+INSERT INTO tb_product(name, description, price) VALUES ('Product 1', 'Description 1', 100.00);
+INSERT INTO tb_product(name, description, price) VALUES ('Product 2', 'Description 2', 200.00);
+INSERT INTO tb_product(name, description, price) VALUES ('Product 3', 'Description 3', 300.00);
+INSERT INTO tb_product(name, description, price) VALUES ('Product 4', 'Description 4', 400.00);
+
+INSERT INTO tb_order(client_id, date, total, status) VALUES (1, '2021-06-20T19:53:07Z', 500.00, 2);
+INSERT INTO tb_order(client_id, date, total, status) VALUES (2, '2021-06-20T19:53:07Z', 400.00, 1);
+INSERT INTO tb_order(client_id, date, total, status) VALUES (3, '2021-06-20T19:53:07Z', 300.00, 3);
+INSERT INTO tb_order(client_id, date, total, status) VALUES (4, '2021-06-20T19:53:07Z', 800.00, 4);
+
+INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (1, 1, 2);
+INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (1, 3, 1);
+INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (2, 2, 2);
+INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (3, 3, 1);
+INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (4, 4, 2);
+```
+### Obs: senha para login de qualquer cadastro do seed: 123456
+
+## Criação de arquivo JAR ou WAR pelo perfis no `pom.xml`
+
+### 1. Desenvolvimento - JAR
+
+- **Caso tenha o Maven instalado e configurado corretamente:**
+  - Abrir prompt de comando na pasta do arquivo:
+    ```sh
+    mvn clean package
+    ```
+
+- **Caso não tenha o Maven instalado:**
+  - Abrir prompt de comando na pasta do arquivo:
+    ```sh
+    ./mvnw clean package
+    ```
+
+### 2. Produção - WAR
+
+- **Caso tenha o Maven instalado e configurado corretamente:**
+  - Abrir prompt de comando na pasta do arquivo:
+    ```sh
+    mvn clean package -P producao
+    ```
+
+- **Caso não tenha o Maven instalado:**
+  - Abrir prompt de comando na pasta do arquivo:
+    ```sh
+    ./mvnw clean package -P producao
+    ```
