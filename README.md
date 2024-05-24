@@ -1,4 +1,4 @@
-# Curso Spring Boot Expert
+# API de Compras
 
 [![NPM](https://img.shields.io/npm/l/react)](https://github.com/douglasfragoso/intensivo-java-spring/blob/main/LICENSE) 
 
