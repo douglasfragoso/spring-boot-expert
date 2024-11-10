@@ -74,11 +74,11 @@ O projeto consiste numa API RESTFul com Java e Spring boot para fazer requisiç�
 1. Clone o projeto para sua IDE preferida.
 2. Abra o MySQL Workbench
   - certifique-se das propriedades no [application-dev.properties](src/main/resources/application-dev.properties)
-4. Execute o projeto Spring Boot com spring.profiles.active=${APP_PROFILE:dev} no aplication.properties.
-5. Crie o seed disponível. 
-6. Importe a collection para o Postman através do arquivo da [Collection](<Spring Boot Expert.postman_collection.json>).
-7. Utilize as rotas fornecidas para realizar requisições ao sistema, lembrando de passar o token gerado na autenticação.
-8. Verifique a documentação no Swagger acessando: [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+3. Execute o projeto Spring Boot com spring.profiles.active=${APP_PROFILE:dev} no aplication.properties.
+4. Crie o seed disponível. 
+5. Importe a collection para o Postman através do arquivo da [Collection](<Spring Boot Expert.postman_collection.json>).
+6. Utilize as rotas fornecidas para realizar requisições ao sistema, lembrando de passar o token gerado na autenticação.
+7. Verifique a documentação no Swagger acessando: [Swagger UI](http://localhost:8080/swagger-ui/index.html)
 
 ### Seed para Data Base
 
@@ -106,7 +106,7 @@ INSERT INTO tb_order_item(order_id, product_id, quantity) VALUES (4, 4, 2);
 ```
 ### Obs! Senha para login de qualquer cadastro do seed: 123456
 
-## Criação de arquivo JAR ou WAR pelo perfis no `pom.xml`
+## Criação de arquivo JAR ou WAR pelos perfis no `pom.xml`
 
 ### 1. Desenvolvimento - JAR
 
